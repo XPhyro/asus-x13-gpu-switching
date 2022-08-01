@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+PCIPATH=/sys/bus/pci/devices/0000:01:00.0
 GPUFILE=/etc/asus_nvidia
 
 if [ -f "$GPUFILE" ]; then
@@ -10,8 +11,8 @@ if [ -f "$GPUFILE" ]; then
     modprobe nvidia
   
     printf "%s\n" "setting nvidia power/control auto"
-    printf "%s\n" 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
+    printf "%s\n" 'auto' > "$PCIPATH/power/control"
 else
     printf "%s\n" "deactivating nvidia"
-    printf "%s\n" 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
+    printf "%s\n" 1 > "$PCIPATH/remove"
 fi

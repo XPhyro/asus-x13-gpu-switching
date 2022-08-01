@@ -8,6 +8,7 @@ logerr() {
     printf "%s\n" "$@" >&2
 }
 
+PCIPATH=/sys/bus/pci/devices/0000:01:00.0
 GPUDIR=/etc/asus_nvidia
 LOCKDIR=/tmp/asusgpuswitch.lck
 
@@ -41,7 +42,7 @@ if ! mkdir -- "$GPUDIR"; then
     sleep 1
   
     log "acpi_call to power off the dGPU"
-    log 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
+    log 1 > "$PCIPATH/remove"
   
     sleep 1
   
@@ -59,7 +60,7 @@ else
     modprobe nvidia
   
     log "setting nvidia power/control auto"
-    log 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
+    log 'auto' > "$PCIPATH/power/control"
   
     log "setting $GPUDIR"
 fi
