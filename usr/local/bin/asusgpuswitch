@@ -3,35 +3,35 @@
 GPUFILE=/etc/asus_nvidia
 
 if [ -f "$GPUFILE" ]; then
-  echo "removing nvidia kernel modules"
-  rmmod nvidia_uvm
-  rmmod nvidia_drm
-  rmmod nvidia_modeset
-  rmmod nvidia
-
-  sleep 1
-
-  echo "acpi_call to power off the dGPU"
-  echo 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
-
-  sleep 1
-
-  echo "removing /etc/asus_nvidia"
-  rm "$GPUFILE"
+    printf "%s\n" "removing nvidia kernel modules"
+    rmmod nvidia_uvm
+    rmmod nvidia_drm
+    rmmod nvidia_modeset
+    rmmod nvidia
+  
+    sleep 1
+  
+    printf "%s\n" "acpi_call to power off the dGPU"
+    printf "%s\n" 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
+  
+    sleep 1
+  
+    printf "%s\n" "removing /etc/asus_nvidia"
+    rm -- "$GPUFILE"
 else
-  echo "acpi_call to power on the dGPU"
-  echo 1 > /sys/bus/pci/rescan
-  sleep 1
-
-  echo "loading nvidia kernel modules"
-  modprobe nvidia_uvm
-  modprobe nvidia_drm
-  modprobe nvidia_modeset
-  modprobe nvidia
-
-  echo "setting nvidia power/control auto"
-  echo 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
-
-  echo "setting $GPUFILE"
-  touch "$GPUFILE"
+    printf "%s\n" "acpi_call to power on the dGPU"
+    printf "%s\n" 1 > /sys/bus/pci/rescan
+    sleep 1
+  
+    printf "%s\n" "loading nvidia kernel modules"
+    modprobe nvidia_uvm
+    modprobe nvidia_drm
+    modprobe nvidia_modeset
+    modprobe nvidia
+  
+    printf "%s\n" "setting nvidia power/control auto"
+    printf "%s\n" 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
+  
+    printf "%s\n" "setting $GPUFILE"
+    touch -- "$GPUFILE"
 fi

@@ -3,15 +3,15 @@
 GPUFILE=/etc/asus_nvidia
 
 if [ -f "$GPUFILE" ]; then
-  echo "activating and loading Nvidia"
-  modprobe nvidia_uvm
-  modprobe nvidia_drm
-  modprobe nvidia_modeset
-  modprobe nvidia
-
-  echo "setting nvidia power/control auto"
-  echo 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
+    printf "%s\n" "activating and loading Nvidia"
+    modprobe nvidia_uvm
+    modprobe nvidia_drm
+    modprobe nvidia_modeset
+    modprobe nvidia
+  
+    printf "%s\n" "setting nvidia power/control auto"
+    printf "%s\n" 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
 else
-  echo "deactivating nvidia"
-  echo 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
+    printf "%s\n" "deactivating nvidia"
+    printf "%s\n" 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
 fi
