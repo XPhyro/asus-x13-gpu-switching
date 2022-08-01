@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 GPUFILE=/etc/asus_nvidia
 

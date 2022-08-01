@@ -1,5 +1,5 @@
 [Unit]
-Description=dGPU boot enable/disable script...
+Description=Enable/disable dGPU boot for ASUS ROG Flow X13.
 Before=graphical.target
 After=suspend.target
 
