@@ -2,10 +2,7 @@
 
 GPUFILE=/etc/asus_nvidia
 
-if [ -f $GPUFILE ]; then
-  systemctl stop display-manager
-  sleep 1
-
+if [ -f "$GPUFILE" ]; then
   echo "removing nvidia kernel modules"
   rmmod nvidia_uvm
   rmmod nvidia_drm
@@ -20,17 +17,8 @@ if [ -f $GPUFILE ]; then
   sleep 1
 
   echo "removing /etc/asus_nvidia"
-  rm /etc/asus_nvidia
-
-  echo "restarting display manager"
-  systemctl restart display-manager.service
+  rm "$GPUFILE"
 else
-  echo "set to Nvidia mode flag and restart the display manager"
-
-  echo "stopping the display-manager"
-  systemctl stop display-manager.service
-  sleep 1
-
   echo "acpi_call to power on the dGPU"
   echo 1 > /sys/bus/pci/rescan
   sleep 1
@@ -44,9 +32,6 @@ else
   echo "setting nvidia power/control auto"
   echo 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
 
-  echo "setting /etc/asus_nvidia"
-  touch /etc/asus_nvidia
-
-  echo "restarting display manager"
-  systemctl restart display-manager.service
+  echo "setting $GPUFILE"
+  touch "$GPUFILE"
 fi

@@ -2,7 +2,7 @@
 
 GPUFILE=/etc/asus_nvidia
 
-if [ -f $GPUFILE ]; then
+if [ -f "$GPUFILE" ]; then
   echo "activating and loading Nvidia"
   modprobe nvidia_uvm
   modprobe nvidia_drm
