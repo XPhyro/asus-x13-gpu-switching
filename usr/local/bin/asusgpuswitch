@@ -1,8 +1,13 @@
 #!/usr/bin/env sh
 
-GPUFILE=/etc/asus_nvidia
+GPUDIR=/etc/asus_nvidia
+LOCKDIR=/tmp/asusgpuswitch.lck
 
-if [ -f "$GPUFILE" ]; then
+while ! mkdir -- "$LOCKDIR"; do
+    sleep 1
+done
+
+if ! mkdir -- "$GPUDIR"; then
     printf "%s\n" "removing nvidia kernel modules"
     rmmod nvidia_uvm
     rmmod nvidia_drm
@@ -17,7 +22,7 @@ if [ -f "$GPUFILE" ]; then
     sleep 1
   
     printf "%s\n" "removing /etc/asus_nvidia"
-    rm -- "$GPUFILE"
+    rm -r -- "$GPUDIR"
 else
     printf "%s\n" "acpi_call to power on the dGPU"
     printf "%s\n" 1 > /sys/bus/pci/rescan
@@ -32,6 +37,7 @@ else
     printf "%s\n" "setting nvidia power/control auto"
     printf "%s\n" 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
   
-    printf "%s\n" "setting $GPUFILE"
-    touch -- "$GPUFILE"
+    printf "%s\n" "setting $GPUDIR"
 fi
+
+rm -r -- "$LOCKDIR"
