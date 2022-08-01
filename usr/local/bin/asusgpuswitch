@@ -1,5 +1,13 @@
 #!/usr/bin/env sh
 
+log() {
+    printf "%s\n" "$@"
+}
+
+logerr() {
+    printf "%s\n" "$@" >&2
+}
+
 GPUDIR=/etc/asus_nvidia
 LOCKDIR=/tmp/asusgpuswitch.lck
 
@@ -8,7 +16,7 @@ while ! mkdir -- "$LOCKDIR"; do
 done
 
 if ! mkdir -- "$GPUDIR"; then
-    printf "%s\n" "removing nvidia kernel modules"
+    log "removing nvidia kernel modules"
     rmmod nvidia_uvm
     rmmod nvidia_drm
     rmmod nvidia_modeset
@@ -16,28 +24,28 @@ if ! mkdir -- "$GPUDIR"; then
   
     sleep 1
   
-    printf "%s\n" "acpi_call to power off the dGPU"
-    printf "%s\n" 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
+    log "acpi_call to power off the dGPU"
+    log 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
   
     sleep 1
   
-    printf "%s\n" "removing /etc/asus_nvidia"
+    log "removing /etc/asus_nvidia"
     rm -r -- "$GPUDIR"
 else
-    printf "%s\n" "acpi_call to power on the dGPU"
-    printf "%s\n" 1 > /sys/bus/pci/rescan
+    log "acpi_call to power on the dGPU"
+    log 1 > /sys/bus/pci/rescan
     sleep 1
   
-    printf "%s\n" "loading nvidia kernel modules"
+    log "loading nvidia kernel modules"
     modprobe nvidia_uvm
     modprobe nvidia_drm
     modprobe nvidia_modeset
     modprobe nvidia
   
-    printf "%s\n" "setting nvidia power/control auto"
-    printf "%s\n" 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
+    log "setting nvidia power/control auto"
+    log 'auto' > /sys/bus/pci/devices/0000\:01\:00.0/power/control
   
-    printf "%s\n" "setting $GPUDIR"
+    log "setting $GPUDIR"
 fi
 
 rm -r -- "$LOCKDIR"
