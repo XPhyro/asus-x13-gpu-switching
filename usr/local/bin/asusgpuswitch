@@ -15,6 +15,22 @@ while ! mkdir -- "$LOCKDIR"; do
     sleep 1
 done
 
+[ "$#" -ne 0 ] && {
+    case "$1" in
+        on)
+            [ -d "$GPUDIR" ] && exit 0
+            log "already on"
+            ;;
+        off)
+            [ ! -d "$GPUDIR" ] && exit 0
+            log "already off"
+            ;;
+        *)
+            logerr "unkown argument"
+            exit 1;;
+    esac
+}
+
 if ! mkdir -- "$GPUDIR"; then
     log "removing nvidia kernel modules"
     rmmod nvidia_uvm
