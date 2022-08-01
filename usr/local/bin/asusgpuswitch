@@ -12,7 +12,7 @@ PCIPATH=/sys/bus/pci/devices/0000:01:00.0
 GPUDIR=/etc/asus_nvidia
 LOCKDIR=/tmp/asusgpuswitch.lck
 
-while ! mkdir -- "$LOCKDIR"; do
+while ! mkdir -- "$LOCKDIR" 2> /dev/null; do
     sleep 1
 done
 
@@ -32,7 +32,7 @@ done
     esac
 }
 
-if ! mkdir -- "$GPUDIR"; then
+if ! mkdir -- "$GPUDIR" 2> /dev/null; then
     log "removing nvidia kernel modules"
     rmmod nvidia_uvm
     rmmod nvidia_drm
