@@ -16,6 +16,8 @@ while ! mkdir -- "$LOCKDIR" 2> /dev/null; do
     sleep 1
 done
 
+trap 'rm -r -- "$LOCKDIR"' INT EXIT QUIT TERM
+
 [ "$#" -ne 0 ] && {
     case "$1" in
         on)
@@ -33,19 +35,22 @@ done
 }
 
 if ! mkdir -- "$GPUDIR" 2> /dev/null; then
-    log "removing nvidia kernel modules"
-    rmmod nvidia_uvm
-    rmmod nvidia_drm
-    rmmod nvidia_modeset
-    rmmod nvidia
-  
-    sleep 1
-  
-    log "acpi_call to power off the dGPU"
-    log 1 > "$PCIPATH/remove"
-  
-    sleep 1
-  
+    lsmod | grep -Fq nvidia && {
+        log "removing nvidia kernel modules"
+        rmmod nvidia_uvm \
+            && rmmod nvidia_drm \
+            && rmmod nvidia_modeset \
+            && rmmod nvidia \
+            || exit 1
+      
+        sleep 1
+      
+        log "acpi_call to power off the dGPU"
+        log 1 > "$PCIPATH/remove"
+      
+        sleep 1
+    }
+
     log "removing /etc/asus_nvidia"
     rm -r -- "$GPUDIR"
 else
@@ -60,9 +65,7 @@ else
     modprobe nvidia
   
     log "setting nvidia power/control auto"
-    log 'auto' > "$PCIPATH/power/control"
+    log "auto" > "$PCIPATH/power/control"
   
     log "setting $GPUDIR"
 fi
-
-rm -r -- "$LOCKDIR"
