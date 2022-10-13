@@ -8,6 +8,13 @@ logerr() {
     printf "%s\n" "$@" >&2
 }
 
+safermmod() {
+    ! rmmod "$1" 2>&1 > /dev/null \
+        | tee /dev/tty \
+        | grep -v -F "rmmod: ERROR: Module $1 is not currently loaded" \
+        | grep -Fq ''
+}
+
 PCIPATH=/sys/bus/pci/devices/0000:01:00.0
 GPUDIR=/etc/asus_nvidia
 LOCKDIR=/tmp/asusgpuswitch.lck
@@ -37,9 +44,9 @@ trap 'rm -r -- "$LOCKDIR"' INT EXIT QUIT TERM
 if ! mkdir -- "$GPUDIR" 2> /dev/null; then
     lsmod | grep -Fq nvidia && {
         log "removing nvidia kernel modules"
-        rmmod nvidia_uvm \
-            && rmmod nvidia_drm \
-            && rmmod nvidia_modeset \
+        safermmod nvidia_uvm \
+            && safermmod nvidia_drm \
+            && safermmod nvidia_modeset \
             && rmmod nvidia \
             || exit 1
       
