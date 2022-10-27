@@ -1,18 +1,9 @@
 #!/usr/bin/env sh
 
 PCIPATH=/sys/bus/pci/devices/0000:01:00.0
-GPUFILE=/etc/asus_nvidia
+GPUDIR=/etc/asus_nvidia
 
-if [ -f "$GPUFILE" ]; then
-    printf "%s\n" "activating and loading Nvidia"
-    modprobe nvidia_uvm
-    modprobe nvidia_drm
-    modprobe nvidia_modeset
-    modprobe nvidia
-  
-    printf "%s\n" "setting nvidia power/control auto"
-    printf "%s\n" 'auto' > "$PCIPATH/power/control"
-else
-    printf "%s\n" "deactivating nvidia"
-    printf "%s\n" 1 > "$PCIPATH/remove"
-fi
+printf "%s\n" "deactivating nvidia"
+printf "%s\n" 1 > "$PCIPATH/remove"
+
+rm -rf -- "$GPUDIR"
