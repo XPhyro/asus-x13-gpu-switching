@@ -54,8 +54,8 @@ if ! mkdir -- "$GPUDIR" 2> /dev/null; then
       
         log "acpi_call to power off the dGPU"
         log 1 > "$PCIPATH/remove"
-      
-        sleep 1
+
+        systemctl stop nvidia-powerd
     }
 
     log "removing /etc/asus_nvidia"
@@ -70,6 +70,9 @@ else
     modprobe nvidia_drm
     modprobe nvidia_modeset
     modprobe nvidia
+
+    systemctl start nvidia-powerd
+    sleep 0.5
   
     log "setting nvidia power/control auto"
     log "auto" > "$PCIPATH/power/control"
